@@ -8,4 +8,6 @@ import retrofit2.http.POST;
 public interface ApiService {
     @POST("login")
     Call<JsonObject> login(@Body LoginRequest loginRequest);
+    /*@GET("ruta/a/tu/api")
+    Call<List<Solicitud>> obtenerSolicitudes();*/
 }

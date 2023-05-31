@@ -2,14 +2,16 @@ package com.example.zonazero0;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.util.Base64;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -39,6 +41,7 @@ public class MainActivity extends AppCompatActivity {
                     loginUser(user_name, password);
                 } else {
                     // Muestra un mensaje de error si los campos están vacíos
+                    Toast.makeText(MainActivity.this, "Por favor llene todos los campos", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -54,8 +57,20 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
                 if (response.isSuccessful()) {
-                    // Procesa la respuesta de la API y realiza acciones pertinentes.
-                    Toast.makeText(MainActivity.this, "Inicio de sesión exitoso", Toast.LENGTH_SHORT).show();
+                    String token = response.body().get("token").getAsString();
+                    int userType = decodeUserType(token);
+                    if (userType == 1) {
+                        // redirige al usuario a MainAdmin
+                        Intent intent = new Intent(MainActivity.this, MainAdmin.class);
+                        startActivity(intent);
+                    } else if (userType == 2) {
+                        // redirige al usuario a MainUser
+                        Intent intent = new Intent(MainActivity.this, MainUser.class);
+                        startActivity(intent);
+                    } else {
+                        // Muestra un mensaje de error si el tipo de usuario es desconocido
+                        Toast.makeText(MainActivity.this, "Error: tipo de usuario desconocido", Toast.LENGTH_SHORT).show();
+                    }
                 } else {
                     // Muestra un mensaje de error en caso de fallo
                     Toast.makeText(MainActivity.this, "Error: Inicio de sesión fallido", Toast.LENGTH_SHORT).show();
@@ -68,5 +83,15 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(MainActivity.this, "Error de conexión: " + t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    private int decodeUserType(String token) {
+        String[] parts = token.split("\\.");
+        if (parts.length != 3) {
+            throw new IllegalArgumentException("Invalid token");
+        }
+        String payload = new String(Base64.decode(parts[1], Base64.DEFAULT));
+        JsonObject payloadJson = new JsonParser().parse(payload).getAsJsonObject();
+        return payloadJson.get("role").getAsInt();
     }
 }
