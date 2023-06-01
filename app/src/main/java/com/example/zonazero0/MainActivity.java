@@ -1,11 +1,11 @@
 package com.example.zonazero0;
-
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Base64;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -13,6 +13,7 @@ import android.widget.Toast;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -71,12 +72,15 @@ public class MainActivity extends AppCompatActivity {
                     String token = response.body().get("token").getAsString();
                     int userType = decodeUserType(token);
                     int branchId = decodeBranchId(token);
+                    int id = decodeId(token);
 
                     SharedPreferences.Editor editor = sharedPreferences.edit();
                     editor.putString("token", token);
                     editor.putInt("userType", userType);
                     editor.putInt("branchId", branchId);
+                    editor.putInt("id", id);
                     editor.apply();
+                    Log.d("SolicitudPregunta", "Valor de Id: " + id);
 
                     redirectUser(userType);
                 } else {
@@ -128,5 +132,15 @@ public class MainActivity extends AppCompatActivity {
         String payload = new String(Base64.decode(parts[1], Base64.DEFAULT));
         JsonObject payloadJson = new JsonParser().parse(payload).getAsJsonObject();
         return payloadJson.get("branch_id").getAsInt();
+    }
+
+    private int decodeId(String token) {
+        String[] parts = token.split("\\.");
+        if (parts.length != 3) {
+            throw new IllegalArgumentException("Invalid token");
+        }
+        String payload = new String(Base64.decode(parts[1], Base64.DEFAULT));
+        JsonObject payloadJson = new JsonParser().parse(payload).getAsJsonObject();
+        return payloadJson.get("id").getAsInt();
     }
 }

@@ -26,4 +26,7 @@ public interface ApiService {
     @GET("solicitudes4/{branch_id}")
     Call<List<Solicitud>> getSolicitudes4(@Path("branch_id") int branch_id);
 
+    @POST("solicitudes")
+    Call<CrearSolicitud> crearSolicitud(@Body CrearSolicitud crearSolicitud);
+
 }
