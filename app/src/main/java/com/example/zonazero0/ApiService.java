@@ -8,6 +8,7 @@ import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
+import retrofit2.http.Path;
 
 public interface ApiService {
     @POST("login")
@@ -21,4 +22,8 @@ public interface ApiService {
 
     @GET("solicitudes3")
     Call<List<Solicitud>> getSolicitudes3();
+
+    @GET("solicitudes4/{branch_id}")
+    Call<List<Solicitud>> getSolicitudes4(@Path("branch_id") int branch_id);
+
 }

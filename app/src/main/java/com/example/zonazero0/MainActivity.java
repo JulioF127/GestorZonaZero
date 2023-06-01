@@ -70,10 +70,12 @@ public class MainActivity extends AppCompatActivity {
                 if (response.isSuccessful()) {
                     String token = response.body().get("token").getAsString();
                     int userType = decodeUserType(token);
+                    int branchId = decodeBranchId(token);
 
                     SharedPreferences.Editor editor = sharedPreferences.edit();
                     editor.putString("token", token);
                     editor.putInt("userType", userType);
+                    editor.putInt("branchId", branchId);
                     editor.apply();
 
                     redirectUser(userType);
@@ -116,5 +118,15 @@ public class MainActivity extends AppCompatActivity {
         String payload = new String(Base64.decode(parts[1], Base64.DEFAULT));
         JsonObject payloadJson = new JsonParser().parse(payload).getAsJsonObject();
         return payloadJson.get("role").getAsInt();
+    }
+
+    private int decodeBranchId(String token) {
+        String[] parts = token.split("\\.");
+        if (parts.length != 3) {
+            throw new IllegalArgumentException("Invalid token");
+        }
+        String payload = new String(Base64.decode(parts[1], Base64.DEFAULT));
+        JsonObject payloadJson = new JsonParser().parse(payload).getAsJsonObject();
+        return payloadJson.get("branch_id").getAsInt();
     }
 }

@@ -162,6 +162,7 @@ public class MainAdmin extends AppCompatActivity {
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.remove("token");
         editor.remove("userType");
+        editor.remove("branchId");
         editor.apply();
 
         Intent intent = new Intent(MainAdmin.this, MainActivity.class);
