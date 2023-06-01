@@ -4,6 +4,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import java.text.DateFormat;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -21,17 +22,21 @@ public class SolicitudAdapter extends RecyclerView.Adapter<SolicitudAdapter.Soli
     @NonNull
     @Override
     public SolicitudViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_solicitud, parent, false);
-        return new SolicitudViewHolder(v);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_solicitud, parent, false);
+        return new SolicitudViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull SolicitudViewHolder holder, int position) {
-        Solicitud solicitud = listaSolicitudes.get(position);
-        // Aquí debes vincular los datos de tu solicitud con los elementos de tu diseño de tarjeta.
-        // Por ejemplo:
-        holder.tvIdSolicitud.setText(String.valueOf(solicitud.getId()));
-        holder.tvNombreProducto.setText(solicitud.getNombreProducto());
+        Solicitud solicitudActual = listaSolicitudes.get(position);
+
+        holder.nombreProducto.setText(solicitudActual.getNombre_producto());
+        holder.cantidadSolicitada.setText(String.valueOf(solicitudActual.getCantidad_solicitada()));
+        holder.prioridad.setText(String.valueOf(solicitudActual.getPrioridad()));
+        DateFormat df = DateFormat.getDateInstance();
+        String fechaComoCadena = df.format(solicitudActual.getFecha_solicitud());
+        holder.fecha.setText(fechaComoCadena);
+        holder.estado.setText(solicitudActual.getEstado());
     }
 
     @Override
@@ -41,13 +46,19 @@ public class SolicitudAdapter extends RecyclerView.Adapter<SolicitudAdapter.Soli
 
     public static class SolicitudViewHolder extends RecyclerView.ViewHolder {
 
-        public TextView tvIdSolicitud;
-        public TextView tvNombreProducto;
+        TextView nombreProducto;
+        TextView cantidadSolicitada;
+        TextView prioridad;
+        TextView fecha;
+        TextView estado;
 
-        public SolicitudViewHolder(View v) {
-            super(v);
-            tvIdSolicitud = v.findViewById(R.id.tv_id_solicitud);
-            tvNombreProducto = v.findViewById(R.id.tv_nombre_producto);
+        public SolicitudViewHolder(@NonNull View itemView) {
+            super(itemView);
+            nombreProducto = itemView.findViewById(R.id.tvNombreProducto);
+            cantidadSolicitada = itemView.findViewById(R.id.tvCantidadSolicitada);
+            prioridad = itemView.findViewById(R.id.tvPrioridad);
+            fecha = itemView.findViewById(R.id.tvFecha);
+            estado = itemView.findViewById(R.id.tvEstado);
         }
     }
 }

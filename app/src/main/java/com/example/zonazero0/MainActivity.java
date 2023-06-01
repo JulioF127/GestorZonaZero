@@ -3,6 +3,7 @@ package com.example.zonazero0;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Base64;
 import android.view.View;
@@ -21,11 +22,21 @@ public class MainActivity extends AppCompatActivity {
     private EditText editTextUsername;
     private EditText editTextPassword;
     private Button buttonLogin;
+    private SharedPreferences sharedPreferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        sharedPreferences = getSharedPreferences("userPreferences", MODE_PRIVATE);
+        String token = sharedPreferences.getString("token", null);
+        int userType = sharedPreferences.getInt("userType", -1);
+
+        if (token != null && userType != -1) {
+            redirectUser(userType);
+            return;
+        }
 
         editTextUsername = findViewById(R.id.editTextUsername);
         editTextPassword = findViewById(R.id.editTextPassword);
@@ -59,18 +70,13 @@ public class MainActivity extends AppCompatActivity {
                 if (response.isSuccessful()) {
                     String token = response.body().get("token").getAsString();
                     int userType = decodeUserType(token);
-                    if (userType == 1) {
-                        // redirige al usuario a MainAdmin
-                        Intent intent = new Intent(MainActivity.this, MainAdmin.class);
-                        startActivity(intent);
-                    } else if (userType == 2) {
-                        // redirige al usuario a MainUser
-                        Intent intent = new Intent(MainActivity.this, MainUser.class);
-                        startActivity(intent);
-                    } else {
-                        // Muestra un mensaje de error si el tipo de usuario es desconocido
-                        Toast.makeText(MainActivity.this, "Error: tipo de usuario desconocido", Toast.LENGTH_SHORT).show();
-                    }
+
+                    SharedPreferences.Editor editor = sharedPreferences.edit();
+                    editor.putString("token", token);
+                    editor.putInt("userType", userType);
+                    editor.apply();
+
+                    redirectUser(userType);
                 } else {
                     // Muestra un mensaje de error en caso de fallo
                     Toast.makeText(MainActivity.this, "Error: Inicio de sesión fallido", Toast.LENGTH_SHORT).show();
@@ -83,6 +89,23 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(MainActivity.this, "Error de conexión: " + t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    private void redirectUser(int userType) {
+        if (userType == 1) {
+            // redirige al usuario a MainAdmin
+            Intent intent = new Intent(MainActivity.this, MainAdmin.class);
+            startActivity(intent);
+            finish();
+        } else if (userType == 2) {
+            // redirige al usuario a MainUser
+            Intent intent = new Intent(MainActivity.this, MainUser.class);
+            startActivity(intent);
+            finish();
+        } else {
+            // Muestra un mensaje de error si el tipo de usuario es desconocido
+            Toast.makeText(MainActivity.this, "Error: tipo de usuario desconocido", Toast.LENGTH_SHORT).show();
+        }
     }
 
     private int decodeUserType(String token) {
