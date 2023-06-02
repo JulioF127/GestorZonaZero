@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "195906963467",
+    "project_id": "notificaciones-d1b48",
+    "storage_bucket": "notificaciones-d1b48.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:195906963467:android:5c701eeb79723dd1645f0e",
+        "android_client_info": {
+          "package_name": "com.example.zonazero0"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "195906963467-vu6eaubsj8ihoph831m2mko5q5s0gaev.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBJ3PWXzxtsg8h9xndHmxg1PenDsOyyXf8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "195906963467-vu6eaubsj8ihoph831m2mko5q5s0gaev.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
