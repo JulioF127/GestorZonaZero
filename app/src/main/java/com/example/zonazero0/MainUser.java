@@ -82,6 +82,7 @@ public class MainUser extends AppCompatActivity {
             }
         });
 
+        //Se obtiene el token y el tipo de usuario de las shared preferences
         sharedPreferences = getSharedPreferences("userPreferences", MODE_PRIVATE);
         String token = sharedPreferences.getString("token", null);
         int userType = sharedPreferences.getInt("userType", -1);
@@ -121,7 +122,7 @@ public class MainUser extends AppCompatActivity {
         // Detener la verificación del token cuando la actividad se destruye
         tokenHandler.removeCallbacks(tokenRunnable);
     }
-
+    //Para obetner las solicitudes
     private void getSolicitudes(int branch_id) {
         String BASE_URL = "http://157.230.0.143:3000/api/";
         ApiService apiService = RetrofitClient.getApiService(BASE_URL);
@@ -167,7 +168,7 @@ public class MainUser extends AppCompatActivity {
         startActivity(intent);
         finish();
     }
-
+    //Para el boton de agregar soli
     private void openSolicitudActivity() {
         Intent intent = new Intent(MainUser.this, SolicitudPregunta.class);
         startActivity(intent);

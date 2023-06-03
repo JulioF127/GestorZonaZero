@@ -39,6 +39,7 @@ public class MainAdmin extends AppCompatActivity {
     private Button btnLogout, btnActualizar;
     private SharedPreferences sharedPreferences;
 
+    //Aqui se cambia el tiempo de comprobacion del token
     private static final long INTERVALO_COMPROBACION = 1 * 60 * 1000; // 5 minutos en milisegundos
     private Handler handler;
     private Runnable runnable;
@@ -100,7 +101,7 @@ public class MainAdmin extends AppCompatActivity {
         obtenerSolicitudes2();
         obtenerSolicitudes3();
 
-
+        //Aqui se ejecuta cada X minutos la comrpobacion del token
         handler = new Handler();
         runnable = new Runnable() {
             @Override
@@ -124,6 +125,8 @@ public class MainAdmin extends AppCompatActivity {
         handler.removeCallbacks(runnable);
     }
 
+
+    //Aqui se verifica si el token no ha expirado
     private boolean isTokenValid() {
         String token = sharedPreferences.getString("token", null);
 
@@ -143,7 +146,7 @@ public class MainAdmin extends AppCompatActivity {
 
         // Ajustar la hora local del dispositivo a la hora de Nueva York
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        sdf.setTimeZone(TimeZone.getTimeZone("America/Guatemala"));
+        sdf.setTimeZone(TimeZone.getTimeZone("America/Guatemala")); //Se tuvo que cambiar la hora la de Guatemala porque el token si estaba bien firmado antes lo firmaba como de newyork
         String newYorkTime = sdf.format(new Date(expirationTime * 1000));
 
         try {
@@ -158,7 +161,9 @@ public class MainAdmin extends AppCompatActivity {
     }
 
     private void obtenerSolicitudes1() {
+
         String BASE_URL = "http://157.230.0.143:3000/api/";
+        //Se llama a ApiService para obetener el resto del link y el metodo GET
         ApiService apiService = RetrofitClient.getApiService(BASE_URL);
         Call<List<Solicitud>> call = apiService.getSolicitudes1();
         call.enqueue(new Callback<List<Solicitud>>() {
@@ -226,12 +231,13 @@ public class MainAdmin extends AppCompatActivity {
         });
     }
 
+    //Este metodo lo usa el boton de actualizar
     private void actualizarSolicitudes() {
         obtenerSolicitudes1();
         obtenerSolicitudes2();
         obtenerSolicitudes3();
     }
-
+    //Aqui se eliminan los datos que estaban guardados y se cambia al activity de login
     private void logoutUser() {
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.remove("token");

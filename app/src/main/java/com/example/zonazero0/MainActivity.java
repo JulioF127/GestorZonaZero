@@ -96,7 +96,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
-
+    //Redirige a los usuarios por su role
     private void redirectUser(int userType) {
         if (userType == 1) {
             // redirige al usuario a MainAdmin
@@ -113,7 +113,7 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(MainActivity.this, "Error: tipo de usuario desconocido", Toast.LENGTH_SHORT).show();
         }
     }
-
+    //Se decodifica el token
     private int decodeUserType(String token) {
         String[] parts = token.split("\\.");
         if (parts.length != 3) {
@@ -123,7 +123,7 @@ public class MainActivity extends AppCompatActivity {
         JsonObject payloadJson = new JsonParser().parse(payload).getAsJsonObject();
         return payloadJson.get("role").getAsInt();
     }
-
+    //Para obetner la sucursal del token
     private int decodeBranchId(String token) {
         String[] parts = token.split("\\.");
         if (parts.length != 3) {
@@ -133,7 +133,7 @@ public class MainActivity extends AppCompatActivity {
         JsonObject payloadJson = new JsonParser().parse(payload).getAsJsonObject();
         return payloadJson.get("branch_id").getAsInt();
     }
-
+    // se obtiene el id
     private int decodeId(String token) {
         String[] parts = token.split("\\.");
         if (parts.length != 3) {

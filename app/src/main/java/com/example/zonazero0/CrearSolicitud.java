@@ -1,6 +1,6 @@
 package com.example.zonazero0;
 
-
+//Clase para el esquema de crear solicitudes
 public class CrearSolicitud {
     private String ID_producto;
     private int id;
