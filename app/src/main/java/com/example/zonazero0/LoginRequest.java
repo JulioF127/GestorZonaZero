@@ -1,5 +1,7 @@
 package com.example.zonazero0;
 
+
+//esquema para hacer el post del login
 public class LoginRequest {
     private String user_name;
     private String password;

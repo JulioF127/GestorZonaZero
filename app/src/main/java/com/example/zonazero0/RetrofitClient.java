@@ -2,7 +2,7 @@ package com.example.zonazero0;
 
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
-
+//Clase necesaria para las solicitudes http
 public class RetrofitClient {
     private static Retrofit retrofit = null;
 

@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "146844310522",
+    "project_id": "zonazero-be377",
+    "storage_bucket": "zonazero-be377.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:146844310522:android:dd2456f0e7095cde432243",
+        "android_client_info": {
+          "package_name": "com.example.zonazero0"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "146844310522-37nd4ouejsf7bm2anbvkelr6gd35h0k2.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDfaVSB-SzcBc0ZRe89ap3y99M_cSXTGHo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "146844310522-37nd4ouejsf7bm2anbvkelr6gd35h0k2.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
