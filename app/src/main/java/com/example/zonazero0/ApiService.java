@@ -8,6 +8,7 @@ import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
+import retrofit2.http.PUT;
 import retrofit2.http.Path;
 
 public interface ApiService {
@@ -36,6 +37,7 @@ public interface ApiService {
     @GET("productosPorSucursal/{id}")
     Call<List<Producto>> getProductosPorSucursal(@Path("id") String idSucursal);
 
-
+    @PUT("solicitudes/{id}")
+    Call<JsonObject> updateSolicitud(@Path("id") int idSolicitud);
 
 }

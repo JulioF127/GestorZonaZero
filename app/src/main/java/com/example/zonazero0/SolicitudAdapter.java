@@ -14,6 +14,15 @@ import java.util.List;
 public class SolicitudAdapter extends RecyclerView.Adapter<SolicitudAdapter.SolicitudViewHolder> {
 
     private List<Solicitud> listaSolicitudes;
+    private OnItemClickListener listener;
+
+    public interface OnItemClickListener {
+        void onItemClick(int position);
+    }
+
+    public void setOnItemClickListener(OnItemClickListener listener) {
+        this.listener = listener;
+    }
 
     public SolicitudAdapter(List<Solicitud> listaSolicitudes) {
         this.listaSolicitudes = listaSolicitudes;
@@ -39,7 +48,6 @@ public class SolicitudAdapter extends RecyclerView.Adapter<SolicitudAdapter.Soli
         holder.fecha.setText("Fecha de Solicitud: " + fechaComoCadena);
         holder.estado.setText("Estado: " + solicitudActual.getEstado());
 
-        //pARA CAMBIA la tarjeta de color
         int prioridad = solicitudActual.getPrioridad();
         switch (prioridad) {
             case 1:
@@ -62,7 +70,7 @@ public class SolicitudAdapter extends RecyclerView.Adapter<SolicitudAdapter.Soli
         return listaSolicitudes.size();
     }
 
-    public static class SolicitudViewHolder extends RecyclerView.ViewHolder {
+    public class SolicitudViewHolder extends RecyclerView.ViewHolder {
         TextView idSolicitud;
         TextView nombreProducto;
         TextView cantidadSolicitada;
@@ -80,6 +88,18 @@ public class SolicitudAdapter extends RecyclerView.Adapter<SolicitudAdapter.Soli
             fecha = itemView.findViewById(R.id.tvFecha);
             estado = itemView.findViewById(R.id.tvEstado);
             cardView = itemView.findViewById(R.id.cardview);
+
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (listener != null) {
+                        int position = getAdapterPosition();
+                        if (position != RecyclerView.NO_POSITION) {
+                            listener.onItemClick(position);
+                        }
+                    }
+                }
+            });
         }
     }
 }

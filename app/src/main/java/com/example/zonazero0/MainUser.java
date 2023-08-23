@@ -40,9 +40,13 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class MainUser extends AppCompatActivity {
-    private RecyclerView recyclerView;
+    private RecyclerView recyclerView, recyclerViewInventario; // Agregado recyclerViewInventario para el inventario
     private SolicitudAdapter solicitudAdapter;
+    private ProductoAdapter productoAdapterInventario; // Adaptador para el inventario
     private SharedPreferences sharedPreferences;
+
+    private int branchId;
+
 
     private Button btnLogout;
     private Button btnSolicitud;
@@ -54,13 +58,19 @@ public class MainUser extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        // Obtener branchId de SharedPreferences
+        sharedPreferences = getSharedPreferences("userPreferences", MODE_PRIVATE);
+        branchId = sharedPreferences.getInt("branchId", -1);
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_user);
 
+        // Inicialización de botones y listeners
         btnLogout = findViewById(R.id.button);
         btnSolicitud = findViewById(R.id.button2);
         btnActualizar = findViewById(R.id.button5);
         addDevice();
+
         btnLogout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -82,23 +92,21 @@ public class MainUser extends AppCompatActivity {
             }
         });
 
-        //Se obtiene el token y el tipo de usuario de las shared preferences
-        sharedPreferences = getSharedPreferences("userPreferences", MODE_PRIVATE);
-        String token = sharedPreferences.getString("token", null);
-        int userType = sharedPreferences.getInt("userType", -1);
-        int branch_id = decodeBranchId(token);
-
-        // Si no hay token guardado o el tipo de usuario no es 2, redirige a MainActivity
-        if (token == null || userType != 2) {
-            logoutUser();
-            return;
-        }
-
+        // Inicialización del RecyclerView de Solicitudes
         recyclerView = findViewById(R.id.recyclerView);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
         recyclerView.setLayoutManager(layoutManager);
 
+        // Inicializar el RecyclerView para el inventario
+        recyclerViewInventario = findViewById(R.id.recyclerViewInventario);
+        recyclerViewInventario.setLayoutManager(new LinearLayoutManager(this));
+        getInventario();
+
+
+        // Obtener las solicitudes y el inventario
+        int branch_id = decodeBranchId(sharedPreferences.getString("token", null));
         getSolicitudes(branch_id);
+
 
         // Iniciar la verificación del token cada 5 minutos
         tokenHandler = new Handler();
@@ -122,7 +130,8 @@ public class MainUser extends AppCompatActivity {
         // Detener la verificación del token cuando la actividad se destruye
         tokenHandler.removeCallbacks(tokenRunnable);
     }
-    //Para obetner las solicitudes
+
+    // Método para obtener las solicitudes
     private void getSolicitudes(int branch_id) {
         String BASE_URL = "http://157.230.0.143:3000/api/";
         ApiService apiService = RetrofitClient.getApiService(BASE_URL);
@@ -133,10 +142,11 @@ public class MainUser extends AppCompatActivity {
             public void onResponse(Call<List<Solicitud>> call, Response<List<Solicitud>> response) {
                 if (response.isSuccessful()) {
                     List<Solicitud> solicitudes = response.body();
+
                     solicitudAdapter = new SolicitudAdapter(solicitudes);
                     recyclerView.setAdapter(solicitudAdapter);
                 } else {
-                    // Manejar respuesta no exitosa aquí
+
                 }
             }
 
@@ -146,6 +156,48 @@ public class MainUser extends AppCompatActivity {
             }
         });
     }
+
+    // Método para obtener el inventario
+    private void getInventario() {
+        if (branchId == -1) {
+            Toast.makeText(MainUser.this, "Error en el número de la tienda", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        Toast.makeText(MainUser.this, "Branch ID: " + branchId, Toast.LENGTH_SHORT).show();
+
+        String BASE_URL = "http://157.230.0.143:3000/api/";
+        ApiService apiService = RetrofitClient.getApiService(BASE_URL);
+        Call<List<Producto>> call = apiService.getProductosPorSucursal(String.valueOf(branchId));
+        call.enqueue(new Callback<List<Producto>>() {
+            @Override
+            public void onResponse(Call<List<Producto>> call, Response<List<Producto>> response) {
+                if (response.isSuccessful()) {
+                    List<Producto> listaProductos = response.body();
+
+                    productoAdapterInventario = new ProductoAdapter(listaProductos);
+                    recyclerViewInventario.setAdapter(productoAdapterInventario);
+                    productoAdapterInventario.notifyDataSetChanged();
+                } else {
+                    Toast.makeText(MainUser.this, "Error al obtener el inventario", Toast.LENGTH_SHORT).show();
+
+                    // Imprimir el código de error en la consola
+                    Log.d("Inventario", "Error al obtener el inventario. Código de respuesta: " + response.code());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<Producto>> call, Throwable t) {
+                Toast.makeText(MainUser.this, "Error de conexión: " + t.getMessage(), Toast.LENGTH_LONG).show();
+
+                // Imprimir el error en la consola
+                Log.d("Inventario", "Error de conexión: " + t.getMessage());
+            }
+        });
+    }
+
+
+
+
 
     private int decodeBranchId(String token) {
         String[] parts = token.split("\\.");

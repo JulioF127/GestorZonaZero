@@ -14,6 +14,7 @@ import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 import com.example.zonazero0.RetrofitClient;
 import com.example.zonazero0.Solicitud;
@@ -39,8 +40,8 @@ public class MainAdmin extends AppCompatActivity {
     private Button btnLogout, btnActualizar, btnInventario;
     private SharedPreferences sharedPreferences;
 
-    //Aqui se cambia el tiempo de comprobacion del token
-    private static final long INTERVALO_COMPROBACION = 1 * 60 * 1000; // 5 minutos en milisegundos
+    private static final long INTERVALO_COMPROBACION = 1 * 60 * 1000;
+
     private Handler handler;
     private Runnable runnable;
 
@@ -65,7 +66,6 @@ public class MainAdmin extends AppCompatActivity {
         btnActualizar = findViewById(R.id.button6);
         btnInventario = findViewById(R.id.button10);
 
-
         listaSolicitudes1 = new ArrayList<>();
         listaSolicitudes2 = new ArrayList<>();
         listaSolicitudes3 = new ArrayList<>();
@@ -85,6 +85,35 @@ public class MainAdmin extends AppCompatActivity {
         recyclerView2.setAdapter(solicitudAdapter2);
         recyclerView3.setAdapter(solicitudAdapter3);
 
+        solicitudAdapter1.setOnItemClickListener(new SolicitudAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(int position) {
+                Solicitud solicitudClickeada = listaSolicitudes1.get(position);
+                actualizarSolicitudAPI(solicitudClickeada.getID_solicitud());
+                Toast.makeText(MainAdmin.this, "Solicitud Actualizada ID: " + solicitudClickeada.getID_solicitud(), Toast.LENGTH_SHORT).show();
+
+            }
+        });
+
+        solicitudAdapter2.setOnItemClickListener(new SolicitudAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(int position) {
+                Solicitud solicitudClickeada = listaSolicitudes2.get(position);
+                actualizarSolicitudAPI(solicitudClickeada.getID_solicitud());
+                Toast.makeText(MainAdmin.this, "Solicitud Actualizada ID: " + solicitudClickeada.getID_solicitud(), Toast.LENGTH_SHORT).show();
+
+            }
+        });
+
+
+        solicitudAdapter3.setOnItemClickListener(new SolicitudAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(int position) {
+                Solicitud solicitudClickeada = listaSolicitudes3.get(position);
+                Toast.makeText(MainAdmin.this, "No se puede mover mas" + solicitudClickeada.getID_solicitud(), Toast.LENGTH_SHORT).show();
+            }
+        });
+
         btnLogout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -99,27 +128,18 @@ public class MainAdmin extends AppCompatActivity {
             }
         });
 
-
-
         btnInventario.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Crear un Intent para iniciar InventarioAdmin2
                 Intent intent = new Intent(MainAdmin.this, InventarioAdmin.class);
-
-                // Iniciar el Activity
                 startActivity(intent);
             }
         });
-
-
-
 
         obtenerSolicitudes1();
         obtenerSolicitudes2();
         obtenerSolicitudes3();
 
-        //Aqui se ejecuta cada X minutos la comrpobacion del token
         handler = new Handler();
         runnable = new Runnable() {
             @Override
@@ -128,8 +148,6 @@ public class MainAdmin extends AppCompatActivity {
                     logoutUser();
                     return;
                 }
-
-                // Programa la proxima comprobacion despues de 5 minutos
                 handler.postDelayed(this, INTERVALO_COMPROBACION);
             }
         };
@@ -139,22 +157,19 @@ public class MainAdmin extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        // Detener la ejecución del Runnable cuando la actividad se destruye
         handler.removeCallbacks(runnable);
     }
 
-
-    //Aqui se verifica si el token no ha expirado
     private boolean isTokenValid() {
         String token = sharedPreferences.getString("token", null);
 
         if (token == null) {
-            return false; // No hay token, no es válido
+            return false;
         }
 
         String[] tokenParts = token.split("\\.");
         if (tokenParts.length != 3) {
-            return false; // Token inválido
+            return false;
         }
 
         String tokenPayload = new String(Base64.decode(tokenParts[1], Base64.DEFAULT));
@@ -162,26 +177,23 @@ public class MainAdmin extends AppCompatActivity {
 
         long expirationTime = payloadJson.get("exp").getAsLong();
 
-        // Ajustar la hora local del dispositivo a la hora de Nueva York
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        sdf.setTimeZone(TimeZone.getTimeZone("America/Guatemala")); //Se tuvo que cambiar la hora la de Guatemala porque el token si estaba bien firmado antes lo firmaba como de newyork
+        sdf.setTimeZone(TimeZone.getTimeZone("America/Guatemala"));
         String newYorkTime = sdf.format(new Date(expirationTime * 1000));
 
         try {
             Date newYorkDate = sdf.parse(newYorkTime);
             long currentTime = System.currentTimeMillis();
 
-            return newYorkDate.getTime() > currentTime; // El token es válido si la hora de expiración es posterior a la hora actual ajustada a Nueva York
+            return newYorkDate.getTime() > currentTime;
         } catch (ParseException e) {
             e.printStackTrace();
-            return false; // Error al parsear la fecha, token inválido
+            return false;
         }
     }
 
     private void obtenerSolicitudes1() {
-
         String BASE_URL = "http://157.230.0.143:3000/api/";
-        //Se llama a ApiService para obetener el resto del link y el metodo GET
         ApiService apiService = RetrofitClient.getApiService(BASE_URL);
         Call<List<Solicitud>> call = apiService.getSolicitudes1();
         call.enqueue(new Callback<List<Solicitud>>() {
@@ -249,13 +261,12 @@ public class MainAdmin extends AppCompatActivity {
         });
     }
 
-    //Este metodo lo usa el boton de actualizar
     private void actualizarSolicitudes() {
         obtenerSolicitudes1();
         obtenerSolicitudes2();
         obtenerSolicitudes3();
     }
-    //Aqui se eliminan los datos que estaban guardados y se cambia al activity de login
+
     private void logoutUser() {
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.remove("token");
@@ -269,4 +280,26 @@ public class MainAdmin extends AppCompatActivity {
     }
 
 
+
+
+    private void actualizarSolicitudAPI(int idSolicitud) {
+        String BASE_URL = "http://157.230.0.143:3000/api/";
+        ApiService apiService = RetrofitClient.getApiService(BASE_URL);
+        Call<JsonObject> call = apiService.updateSolicitud(idSolicitud);
+        call.enqueue(new Callback<JsonObject>() {
+            @Override
+            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+                if (response.isSuccessful()) {
+                    Toast.makeText(MainAdmin.this, "SOLICITUD " + idSolicitud + " actualizada", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(MainAdmin.this, "Error al actualizar la solicitud", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<JsonObject> call, Throwable t) {
+                Toast.makeText(MainAdmin.this, "Error de conexión: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
 }
