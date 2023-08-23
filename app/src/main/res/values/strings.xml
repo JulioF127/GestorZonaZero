@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">ZonaZero0</string>
+    <string name="title_activity_inventario_admin">InventarioAdmin</string>
 </resources>

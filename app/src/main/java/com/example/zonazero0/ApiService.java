@@ -29,4 +29,13 @@ public interface ApiService {
     @POST("solicitudes")
     Call<CrearSolicitud> crearSolicitud(@Body CrearSolicitud crearSolicitud);
 
+
+    @POST("actualizarInventario")
+    Call<Producto> actualizarInventario(@Body Producto producto);
+
+    @GET("productosPorSucursal/{id}")
+    Call<List<Producto>> getProductosPorSucursal(@Path("id") String idSucursal);
+
+
+
 }
