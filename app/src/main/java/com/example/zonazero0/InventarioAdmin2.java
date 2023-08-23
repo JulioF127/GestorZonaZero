@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.widget.Toast;
 
@@ -14,10 +15,11 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class InventarioAdmin2 extends AppCompatActivity {
-    private static final String ID_SUCURSAL_FIJO = "2";
+    private static final String PREFERENCES_NAME = "myPreferences";
+    private static final String KEY_TIENDA = "tiendaSeleccionada";
     private RecyclerView recyclerView;
     private ProductoAdapter productoAdapter;
-    private static final String BASE_URL = "http://157.230.0.143:3000/api/";  // Reemplazar con tu URL base
+    private static final String BASE_URL = "http://157.230.0.143:3000/api/";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,8 +35,16 @@ public class InventarioAdmin2 extends AppCompatActivity {
     }
 
     private void obtenerProductos() {
+        SharedPreferences sharedPreferences = getSharedPreferences(PREFERENCES_NAME, MODE_PRIVATE);
+        String idSucursal = sharedPreferences.getString(KEY_TIENDA, "");
+
+        if (idSucursal.isEmpty()) {
+            Toast.makeText(InventarioAdmin2.this, "Error en el número de la tienda", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         ApiService apiService = RetrofitClient.getApiService(BASE_URL);
-        Call<List<Producto>> call = apiService.getProductosPorSucursal(ID_SUCURSAL_FIJO);
+        Call<List<Producto>> call = apiService.getProductosPorSucursal(idSucursal);
         call.enqueue(new Callback<List<Producto>>() {
             @Override
             public void onResponse(Call<List<Producto>> call, Response<List<Producto>> response) {
@@ -54,5 +64,27 @@ public class InventarioAdmin2 extends AppCompatActivity {
                 Toast.makeText(InventarioAdmin2.this, "Error de conexión: " + t.getMessage(), Toast.LENGTH_LONG).show();
             }
         });
+    }
+
+
+    //Estos metodos de aqui borran el cache por decirlo asi, que guarda el numero de tienda
+    //Que se selecciono
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        eliminarTiendaSeleccionada();
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        eliminarTiendaSeleccionada();
+    }
+
+    private void eliminarTiendaSeleccionada() {
+        SharedPreferences sharedPreferences = getSharedPreferences(PREFERENCES_NAME, MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.remove(KEY_TIENDA);
+        editor.apply();
     }
 }
