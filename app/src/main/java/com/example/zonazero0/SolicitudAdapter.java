@@ -1,7 +1,10 @@
+
 package com.example.zonazero0;
 
 import android.graphics.Color;
+import android.view.GestureDetector;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -10,6 +13,8 @@ import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 import java.text.DateFormat;
 import java.util.List;
+import android.os.Handler;
+
 
 public class SolicitudAdapter extends RecyclerView.Adapter<SolicitudAdapter.SolicitudViewHolder> {
 
@@ -18,6 +23,7 @@ public class SolicitudAdapter extends RecyclerView.Adapter<SolicitudAdapter.Soli
 
     public interface OnItemClickListener {
         void onItemClick(int position);
+        void onItemDoubleClicked(int position);
     }
 
     public void setOnItemClickListener(OnItemClickListener listener) {
@@ -63,6 +69,45 @@ public class SolicitudAdapter extends RecyclerView.Adapter<SolicitudAdapter.Soli
                 holder.cardView.setCardBackgroundColor(Color.parseColor("#000000"));
                 break;
         }
+
+        // Para el doble click
+        holder.itemView.setOnTouchListener(new View.OnTouchListener() {
+            GestureDetector gestureDetector = new GestureDetector(holder.itemView.getContext(), new GestureDetector.SimpleOnGestureListener() {
+                private Handler mHandler = new Handler();
+
+                @Override
+                public boolean onSingleTapConfirmed(MotionEvent e) {
+                    if (listener != null) {
+                        int currentPosition = holder.getAdapterPosition();
+                        if (currentPosition != RecyclerView.NO_POSITION) {
+                            mHandler.postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    listener.onItemClick(currentPosition);
+                                }
+                            }, 250);  // delay for 250ms
+                        }
+                    }
+                    return true;
+                }
+
+                @Override
+                public boolean onDoubleTap(MotionEvent e) {
+                    mHandler.removeCallbacksAndMessages(null);  // Cancel any pending single tap
+                    int currentPosition = holder.getAdapterPosition();
+                    if (listener != null && currentPosition != RecyclerView.NO_POSITION) {
+                        listener.onItemDoubleClicked(currentPosition);
+                    }
+                    return true;
+                }
+            });
+
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                gestureDetector.onTouchEvent(event);
+                return true;
+            }
+        });
     }
 
     @Override
@@ -88,18 +133,7 @@ public class SolicitudAdapter extends RecyclerView.Adapter<SolicitudAdapter.Soli
             fecha = itemView.findViewById(R.id.tvFecha);
             estado = itemView.findViewById(R.id.tvEstado);
             cardView = itemView.findViewById(R.id.cardview);
-
-            itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (listener != null) {
-                        int position = getAdapterPosition();
-                        if (position != RecyclerView.NO_POSITION) {
-                            listener.onItemClick(position);
-                        }
-                    }
-                }
-            });
         }
     }
 }
+

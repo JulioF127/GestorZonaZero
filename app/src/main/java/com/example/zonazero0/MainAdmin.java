@@ -32,6 +32,9 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+
 public class MainAdmin extends AppCompatActivity {
 
     private RecyclerView recyclerView1, recyclerView2, recyclerView3;
@@ -89,9 +92,33 @@ public class MainAdmin extends AppCompatActivity {
             @Override
             public void onItemClick(int position) {
                 Solicitud solicitudClickeada = listaSolicitudes1.get(position);
-                actualizarSolicitudAPI(solicitudClickeada.getID_solicitud());
-                Toast.makeText(MainAdmin.this, "Solicitud Actualizada ID: " + solicitudClickeada.getID_solicitud(), Toast.LENGTH_SHORT).show();
 
+                AlertDialog.Builder builder = new AlertDialog.Builder(MainAdmin.this);
+                builder.setTitle("Confirmación");
+                builder.setMessage("¿Estás seguro de querer actualizar la solicitud con ID: " + solicitudClickeada.getID_solicitud() + "?");
+
+                // Botón de confirmación
+                builder.setPositiveButton("Sí", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        actualizarSolicitudAPI(solicitudClickeada.getID_solicitud());
+                        Toast.makeText(MainAdmin.this, "Solicitud Actualizada ID: " + solicitudClickeada.getID_solicitud(), Toast.LENGTH_SHORT).show();
+                    }
+                });
+
+                // Botón de cancelación
+                builder.setNegativeButton("No", null);
+
+                AlertDialog dialog = builder.create();
+                dialog.show();
+                actualizarSolicitudes();
+
+            }
+
+            @Override
+            public void onItemDoubleClicked(int position) {
+                Toast.makeText(MainAdmin.this, "No se puede regresar mas la solicitud", Toast.LENGTH_SHORT).show();
+                actualizarSolicitudes();
             }
         });
 
@@ -99,18 +126,62 @@ public class MainAdmin extends AppCompatActivity {
             @Override
             public void onItemClick(int position) {
                 Solicitud solicitudClickeada = listaSolicitudes2.get(position);
-                actualizarSolicitudAPI(solicitudClickeada.getID_solicitud());
-                Toast.makeText(MainAdmin.this, "Solicitud Actualizada ID: " + solicitudClickeada.getID_solicitud(), Toast.LENGTH_SHORT).show();
 
+                AlertDialog.Builder builder = new AlertDialog.Builder(MainAdmin.this);
+                builder.setTitle("Confirmación");
+                builder.setMessage("¿Estás seguro de querer actualizar la solicitud con ID: " + solicitudClickeada.getID_solicitud() + "?");
+
+                // Botón de confirmación
+                builder.setPositiveButton("Sí", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        actualizarSolicitudAPI(solicitudClickeada.getID_solicitud());
+                        Toast.makeText(MainAdmin.this, "Solicitud Actualizada ID: " + solicitudClickeada.getID_solicitud(), Toast.LENGTH_SHORT).show();
+                    }
+                });
+
+                // Botón de cancelación
+                builder.setNegativeButton("No", null);
+
+                AlertDialog dialog = builder.create();
+                dialog.show();
+                actualizarSolicitudes();
             }
-        });
 
+            @Override
+            public void onItemDoubleClicked(int position) {
+                Solicitud solicitudClickeada = listaSolicitudes2.get(position);
+                Toast.makeText(MainAdmin.this, "Regresando solicitud...", Toast.LENGTH_SHORT).show();
+                revertirSolicitudAPI(solicitudClickeada.getID_solicitud());
+                actualizarSolicitudes();
+            }
+
+        });
 
         solicitudAdapter3.setOnItemClickListener(new SolicitudAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(int position) {
                 Solicitud solicitudClickeada = listaSolicitudes3.get(position);
-                Toast.makeText(MainAdmin.this, "No se puede mover mas" + solicitudClickeada.getID_solicitud(), Toast.LENGTH_SHORT).show();
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(MainAdmin.this);
+                builder.setTitle("Aviso");
+                builder.setMessage("No se puede mover más la solicitud con ID: " + solicitudClickeada.getID_solicitud());
+
+                // Botón de OK
+                builder.setPositiveButton("Entendido", null);
+
+                AlertDialog dialog = builder.create();
+                dialog.show();
+                actualizarSolicitudes();
+            }
+
+
+            @Override
+            public void onItemDoubleClicked(int position) {
+                Solicitud solicitudClickeada = listaSolicitudes3.get(position);
+                Toast.makeText(MainAdmin.this, "Regresando solicitud...", Toast.LENGTH_SHORT).show();
+                revertirSolicitudAPI(solicitudClickeada.getID_solicitud());
+                actualizarSolicitudes();
             }
         });
 
@@ -279,7 +350,27 @@ public class MainAdmin extends AppCompatActivity {
         finish();
     }
 
+    private void revertirSolicitudAPI(int idSolicitud) {
+        String BASE_URL = "http://157.230.0.143:3000/api/";
+        ApiService apiService = RetrofitClient.getApiService(BASE_URL);
+        Call<JsonObject> call = apiService.revertSolicitud(idSolicitud);
+        call.enqueue(new Callback<JsonObject>() {
+            @Override
+            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+                if (response.isSuccessful()) {
+                    Toast.makeText(MainAdmin.this, "Solicitud revertida ID: " + idSolicitud, Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(MainAdmin.this, "Error al revertir la solicitud", Toast.LENGTH_SHORT).show();
+                }
+                refrescarDespuesDeRetraso();
+            }
 
+            @Override
+            public void onFailure(Call<JsonObject> call, Throwable t) {
+                Toast.makeText(MainAdmin.this, "Error de conexión: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
 
 
     private void actualizarSolicitudAPI(int idSolicitud) {
@@ -294,6 +385,7 @@ public class MainAdmin extends AppCompatActivity {
                 } else {
                     Toast.makeText(MainAdmin.this, "Error al actualizar la solicitud", Toast.LENGTH_SHORT).show();
                 }
+                refrescarDespuesDeRetraso();
             }
 
             @Override
@@ -301,5 +393,13 @@ public class MainAdmin extends AppCompatActivity {
                 Toast.makeText(MainAdmin.this, "Error de conexión: " + t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
+    }
+    private void refrescarDespuesDeRetraso() {
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                actualizarSolicitudes();
+            }
+        }, 500);  // 500 milisegundos de retraso
     }
 }

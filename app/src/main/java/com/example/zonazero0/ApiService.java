@@ -40,4 +40,8 @@ public interface ApiService {
     @PUT("solicitudes/{id}")
     Call<JsonObject> updateSolicitud(@Path("id") int idSolicitud);
 
+    @PUT("solicitudes/negative/{id}")
+    Call<JsonObject> revertSolicitud(@Path("id") int idSolicitud);
+
+
 }
