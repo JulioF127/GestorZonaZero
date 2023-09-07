@@ -54,7 +54,7 @@ public class CrearUsuario extends AppCompatActivity {
     }
 
     private void obtenerSucursales() {
-        ApiService apiService = RetrofitClient.getApiService("http://tu_base_url.com/api/");
+        ApiService apiService = RetrofitClient.getApiService("http://157.230.0.143:3000/api/");
 
         apiService.getSucursales().enqueue(new Callback<List<Sucursal>>() {
             @Override
@@ -90,7 +90,7 @@ public class CrearUsuario extends AppCompatActivity {
         request.setUser_type(userType);
         request.setID_sucursal(sucursalId);
 
-        ApiService apiService = RetrofitClient.getApiService("http://tu_base_url.com/api/");
+        ApiService apiService = RetrofitClient.getApiService("http://157.230.0.143:3000/api/");
         apiService.crearUsuario(request).enqueue(new Callback<JsonObject>() {
             @Override
             public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {

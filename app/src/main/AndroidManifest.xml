@@ -16,6 +16,21 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
+            android:name=".CrearProducto"
+            android:exported="false" />
+        <activity
+            android:name=".ActivityProductos"
+            android:exported="false" />
+        <activity
+            android:name=".Productos"
+            android:exported="false" />
+        <activity
+            android:name=".CrearTiendas"
+            android:exported="false" />
+        <activity
+            android:name=".ActivityTiendas"
+            android:exported="false" />
+        <activity
             android:name=".CrearUsuario"
             android:exported="false" />
         <activity

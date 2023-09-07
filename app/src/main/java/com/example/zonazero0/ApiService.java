@@ -58,7 +58,7 @@ public interface ApiService {
 
     // Rutas para productos
     @POST("productos")
-    Call<JsonObject> crearProducto(@Body JsonObject data);
+    Call<JsonObject> crearProducto(@Body CrearProductoRequest request);
 
     @GET("productos")
     Call<List<JsonObject>> getProductos();
@@ -74,7 +74,7 @@ public interface ApiService {
     Call<JsonObject> crearUsuario(@Body CrearUsuarioRequest request);
 
     @GET("users")
-    Call<List<JsonObject>> getUsuarios();
+    Call<List<Usuario>> getUsuarios();
 
     @PUT("users")
     Call<JsonObject> actualizarUsuario(@Body JsonObject data);

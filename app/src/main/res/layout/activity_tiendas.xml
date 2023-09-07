@@ -6,45 +6,47 @@
     android:layout_height="match_parent"
     tools:context=".InventarioAdmin">
 
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/button10"
-        android:layout_width="70dp"
-        android:layout_height="50dp"
-        android:layout_marginTop="4dp"
-        app:icon="@drawable/usb_resized"
-        app:iconGravity="textStart"
-        app:iconPadding="0dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.099"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
     <Button
         android:id="@+id/button7"
         android:layout_width="204dp"
         android:layout_height="87dp"
-        android:text="Tienda 1"
+        android:text="Crear "
         app:layout_constraintBottom_toTopOf="@+id/button8"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.183" />
 
     <Button
         android:id="@+id/button8"
         android:layout_width="204dp"
         android:layout_height="87dp"
-        android:text="Tienda 2"
+        android:text="Editar"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.635" />
+
+    <Button
+        android:id="@+id/button13"
+        android:layout_width="204dp"
+        android:layout_height="87dp"
+        android:text="Ver"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.348" />
 
     <Button
         android:id="@+id/button9"
         android:layout_width="204dp"
         android:layout_height="87dp"
-        android:text="Tienda 3"
+        android:text="Eliminar"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"

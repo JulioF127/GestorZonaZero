@@ -40,7 +40,7 @@ public class MainAdmin extends AppCompatActivity {
     private RecyclerView recyclerView1, recyclerView2, recyclerView3;
     private SolicitudAdapter solicitudAdapter1, solicitudAdapter2, solicitudAdapter3;
     private List<Solicitud> listaSolicitudes1, listaSolicitudes2, listaSolicitudes3;
-    private Button btnLogout, btnActualizar, btnInventario, btnusuarios;
+    private Button btnLogout, btnActualizar, btnInventario, btntiendas;
     private SharedPreferences sharedPreferences;
 
     private static final long INTERVALO_COMPROBACION = 1 * 60 * 1000;
@@ -68,6 +68,7 @@ public class MainAdmin extends AppCompatActivity {
         btnLogout = findViewById(R.id.btn_logout);
         btnActualizar = findViewById(R.id.button6);
         btnInventario = findViewById(R.id.button10);
+        btntiendas= findViewById(R.id.button11);
 
 
         listaSolicitudes1 = new ArrayList<>();
@@ -204,6 +205,14 @@ public class MainAdmin extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(MainAdmin.this, InventarioAdmin.class);
+                startActivity(intent);
+            }
+        });
+
+        btntiendas.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainAdmin.this, ActivityTiendas.class);
                 startActivity(intent);
             }
         });
