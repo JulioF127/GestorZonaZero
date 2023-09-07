@@ -40,7 +40,7 @@ public class MainAdmin extends AppCompatActivity {
     private RecyclerView recyclerView1, recyclerView2, recyclerView3;
     private SolicitudAdapter solicitudAdapter1, solicitudAdapter2, solicitudAdapter3;
     private List<Solicitud> listaSolicitudes1, listaSolicitudes2, listaSolicitudes3;
-    private Button btnLogout, btnActualizar, btnInventario;
+    private Button btnLogout, btnActualizar, btnInventario, btnusuarios;
     private SharedPreferences sharedPreferences;
 
     private static final long INTERVALO_COMPROBACION = 1 * 60 * 1000;
@@ -68,6 +68,7 @@ public class MainAdmin extends AppCompatActivity {
         btnLogout = findViewById(R.id.btn_logout);
         btnActualizar = findViewById(R.id.button6);
         btnInventario = findViewById(R.id.button10);
+
 
         listaSolicitudes1 = new ArrayList<>();
         listaSolicitudes2 = new ArrayList<>();
@@ -195,7 +196,7 @@ public class MainAdmin extends AppCompatActivity {
         btnActualizar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                actualizarSolicitudes();
+                ActivityUsuarios();
             }
         });
 
@@ -336,6 +337,8 @@ public class MainAdmin extends AppCompatActivity {
         obtenerSolicitudes1();
         obtenerSolicitudes2();
         obtenerSolicitudes3();
+        Toast.makeText(MainAdmin.this, "Si funciona " , Toast.LENGTH_SHORT).show();
+
     }
 
     private void logoutUser() {
@@ -402,4 +405,17 @@ public class MainAdmin extends AppCompatActivity {
             }
         }, 500);  // 500 milisegundos de retraso
     }
+
+    private void ActivityUsuarios() {
+
+        Intent intent = new Intent(MainAdmin.this, ActivityUsuarios.class);
+        startActivity(intent);
+        finish();
+    }
+
+
+
+
+
+
 }

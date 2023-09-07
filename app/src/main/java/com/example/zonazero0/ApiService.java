@@ -6,6 +6,7 @@ import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
+import retrofit2.http.DELETE;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.PUT;
@@ -30,7 +31,6 @@ public interface ApiService {
     @POST("solicitudes")
     Call<CrearSolicitud> crearSolicitud(@Body CrearSolicitud crearSolicitud);
 
-
     @POST("actualizarInventario")
     Call<Producto> actualizarInventario(@Body Producto producto);
 
@@ -43,5 +43,43 @@ public interface ApiService {
     @PUT("solicitudes/negative/{id}")
     Call<JsonObject> revertSolicitud(@Path("id") int idSolicitud);
 
+    // Rutas para sucursales
+    @POST("sucursales")
+    Call<JsonObject> crearSucursal(@Body JsonObject data);
+
+    @GET("sucursales")
+    Call<List<Sucursal>> getSucursales();
+
+    @PUT("sucursales")
+    Call<JsonObject> actualizarSucursal(@Body JsonObject data);
+
+    @DELETE("sucursales/:id")
+    Call<Void> eliminarSucursal(@Path("id") int idSucursal);
+
+    // Rutas para productos
+    @POST("productos")
+    Call<JsonObject> crearProducto(@Body JsonObject data);
+
+    @GET("productos")
+    Call<List<JsonObject>> getProductos();
+
+    @PUT("productos")
+    Call<JsonObject> actualizarProducto(@Body JsonObject data);
+
+    @DELETE("productos")
+    Call<Void> eliminarProducto();
+
+    // Rutas para usuarios
+    @POST("users")
+    Call<JsonObject> crearUsuario(@Body CrearUsuarioRequest request);
+
+    @GET("users")
+    Call<List<JsonObject>> getUsuarios();
+
+    @PUT("users")
+    Call<JsonObject> actualizarUsuario(@Body JsonObject data);
+
+    @DELETE("users")
+    Call<Void> eliminarUsuario();
 
 }
