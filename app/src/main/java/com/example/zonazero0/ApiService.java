@@ -76,10 +76,15 @@ public interface ApiService {
     @GET("users")
     Call<List<Usuario>> getUsuarios();
 
+    @GET("users")
+    Call<List<VerUsuarios>> getUsuarios1();
     @PUT("users")
     Call<JsonObject> actualizarUsuario(@Body JsonObject data);
 
     @DELETE("users")
     Call<Void> eliminarUsuario();
+
+    @DELETE("users/{id}")
+    Call<Void> eliminarUsuario(@Path("id") String id);
 
 }
