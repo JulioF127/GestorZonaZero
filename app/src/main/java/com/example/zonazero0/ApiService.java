@@ -63,11 +63,14 @@ public interface ApiService {
     @GET("productos")
     Call<List<JsonObject>> getProductos();
 
+    @GET("productos")
+    Call<List<VerProductos>> getProductos1();
+
     @PUT("productos")
     Call<JsonObject> actualizarProducto(@Body JsonObject data);
 
-    @DELETE("productos")
-    Call<Void> eliminarProducto();
+    @DELETE("productos/{id}")
+    Call<Void> eliminarProducto(@Path("id") int idProducto);
 
     // Rutas para usuarios
     @POST("users")
