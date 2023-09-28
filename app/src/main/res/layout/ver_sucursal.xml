@@ -1,0 +1,42 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+
+    <TextView
+        android:id="@+id/tv_id_sucursal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="id" />
+
+
+    <TextView
+        android:id="@+id/tvNombreSucursal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Nombre de la Sucursal" />
+
+
+
+    <TextView
+        android:id="@+id/tvUbicacion"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Ubicación" />
+
+    <TextView
+        android:id="@+id/tv_id_encargado"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Encargado" />
+
+
+    <Button
+        android:id="@+id/delete_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Eliminar" />
+
+</LinearLayout>

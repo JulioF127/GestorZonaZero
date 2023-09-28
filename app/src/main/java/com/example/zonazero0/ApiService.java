@@ -50,6 +50,9 @@ public interface ApiService {
     @GET("sucursales")
     Call<List<Sucursal>> getSucursales();
 
+    @GET("sucursales")
+    Call<List<VerSucursal>> getSucursales1();
+
     @PUT("sucursales")
     Call<JsonObject> actualizarSucursal(@Body JsonObject data);
 

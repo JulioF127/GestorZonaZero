@@ -8,6 +8,7 @@ import android.widget.Button;
 
 public class ActivityTiendas extends AppCompatActivity {
     private Button crear;
+    private Button ver;  // Referencia al botón Ver
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -20,6 +21,15 @@ public class ActivityTiendas extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(ActivityTiendas.this, CrearTiendas.class);
                 startActivity(intent);
+            }
+        });
+
+        ver = findViewById(R.id.button13);  // Encuentra el botón Ver por ID
+        ver.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(ActivityTiendas.this, VerSucursalesActivity.class);
+                startActivity(intent);  // Inicia la actividad VerSucursalesActivity
             }
         });
     }
